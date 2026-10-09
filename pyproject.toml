@@ -1,0 +1,18 @@
+[project]
+name = "fraud-eval"
+version = "0.1.0"
+description = "The open benchmark for evaluating LLM-based fraud and abuse detectors."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Rishabh Pande" }]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["fraud_eval*"]
