@@ -61,7 +61,7 @@ tests/
 
 ## Roadmap
 
-- [ ] LLM-as-judge scoring for open-ended detector outputs
+- [x] LLM-as-judge scoring for open-ended detector outputs (`fraud_eval/judge.py` — bring your own LLM via a `complete` callable)
 - [ ] Leaderboard: submit your detector's scores
 - [ ] Adversarial paraphrase augmentation (attack packs that evolve)
 - [ ] Multilingual packs (Hindi, Spanish, Portuguese — fraud is global)
