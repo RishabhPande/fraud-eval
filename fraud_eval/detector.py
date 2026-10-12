@@ -17,6 +17,8 @@ class DetectorResult:
     confidence: float = 0.0       # 0.0 - 1.0, optional but useful for ROC-style curves
     label: str = ""               # detector's own category, e.g. "account_takeover"
     latency_ms: float = 0.0       # measured by the Evaluator if not provided
+    cost_usd: float = 0.0         # estimated inference cost for this decision
+                                  # (LLM API/token spend); 0.0 = free/unknown
     raw: dict = field(default_factory=dict)  # anything else you want in the report
 
 

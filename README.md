@@ -9,6 +9,17 @@ red-team attack packs across the fraud types that actually cost money,
 a plug-in interface for any detector, and metrics that matter
 (detection rate, false-positive rate, latency, cost per decision).
 
+## Cost-aware metrics
+
+Accuracy is only half the bill. A detector that catches 95% of fraud at
+$0.10/decision costs you 100x more than one at $0.001/decision — and at
+fraud-scale volume, that dwarfs most accuracy gaps.
+
+Report your spend from `decide()` via `DetectorResult.cost_usd`
+(LLM API/token cost per decision; `0.0` = free/unknown), and every pack
+report includes **`cost_per_correct_decision`** — total spend divided by
+correct calls. See `examples/cost_example.py` for the comparison in action.
+
 ## Why this exists
 
 Fraud teams at banks, fintechs, and marketplaces are bolting LLM-based
@@ -55,6 +66,8 @@ fraud_eval/
     runner.py          # the Evaluator
 examples/
     quickstart.py
+    judge_example.py
+    cost_example.py      # cost-aware metrics demo ($/correct-decision)
 tests/
     test_runner.py
 ```
@@ -62,10 +75,10 @@ tests/
 ## Roadmap
 
 - [x] LLM-as-judge scoring for open-ended detector outputs (`fraud_eval/judge.py` — bring your own LLM via a `complete` callable)
+- [x] Cost-aware metrics: $/correct-decision, not just accuracy
 - [ ] Leaderboard: submit your detector's scores
 - [ ] Adversarial paraphrase augmentation (attack packs that evolve)
 - [ ] Multilingual packs (Hindi, Spanish, Portuguese — fraud is global)
-- [ ] Cost-aware metrics: $/correct-decision, not just accuracy
 
 ## Contributing
 

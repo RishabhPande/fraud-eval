@@ -27,7 +27,14 @@ class EvaluationResults:
         if len(self.pack_metrics) > 1:
             dr = sum(m.detection_rate for m in self.pack_metrics) / len(self.pack_metrics)
             fpr = sum(m.false_positive_rate for m in self.pack_metrics) / len(self.pack_metrics)
-            lines.append(f"[overall] avg_detection_rate={dr:.2f} avg_false_positive_rate={fpr:.2f}")
+            total_cost = sum(m.total_cost_usd for m in self.pack_metrics)
+            total_correct = sum(m.correct_decisions for m in self.pack_metrics)
+            cpcd = total_cost / total_correct if total_correct else 0.0
+            lines.append(
+                f"[overall] avg_detection_rate={dr:.2f} "
+                f"avg_false_positive_rate={fpr:.2f} "
+                f"cost_per_correct_decision=${cpcd:.4f}"
+            )
         return "\n".join(lines)
 
     def misses(self) -> list[CaseResult]:
@@ -50,6 +57,7 @@ class Evaluator:
             tp = fp = tn = fn = 0
             latencies: list[float] = []
             confidences: list[float] = []
+            total_cost = 0.0
             for case in p.cases:
                 start = time.perf_counter()
                 try:
@@ -60,6 +68,7 @@ class Evaluator:
                 if verdict.latency_ms == 0.0:
                     verdict.latency_ms = elapsed
                 latencies.append(verdict.latency_ms)
+                total_cost += max(0.0, verdict.cost_usd)
                 results.case_results.append(
                     CaseResult(case_id=case.id, label=case.label, result=verdict)
                 )
@@ -88,6 +97,7 @@ class Evaluator:
                     avg_confidence_on_hits=(
                         sum(confidences) / len(confidences) if confidences else 0.0
                     ),
+                    total_cost_usd=total_cost,
                 )
             )
         return results
