@@ -23,6 +23,16 @@ red-team attack packs across the fraud types that actually cost money,
 a plug-in interface for any detector, and metrics that matter
 (detection rate, false-positive rate, latency, cost per decision).
 
+## Version note — read this before citing a case count
+
+**v0.1.0 ships 20 cases, verified by running the code in `fraud_eval/attacks.py`.**
+An earlier version of this README stated 40 / 40 / 30 / 30 / 50 cases per pack
+(190 total). That figure does **not** match the code shipped in v0.1.0.
+Do not use the 190 figure for this version. The 190-case benchmark paper
+version is separate, pending pack expansion and re-verification. The
+Hugging Face dataset for v0.1.0 is labelled smoke test for the same reason:
+https://huggingface.co/datasets/RishabhPande/fraud-eval
+
 ## Cost-aware metrics
 
 Accuracy is only half the bill. A detector that catches 95% of fraud at
@@ -47,25 +57,26 @@ standard benchmark for them. Every team hand-rolls its own tests.
 from fraud_eval import AttackPack, Evaluator
 from fraud_eval.detectors import RuleBasedDetector  # swap in your own
 
-pack = AttackPack.load("account_takeover")          # 40 adversarial cases
+pack = AttackPack.load("account_takeover")          # 4 cases in v0.1.0 (3 fraud, 1 benign)
 detector = RuleBasedDetector()                       # your detector here
 
 results = Evaluator(detector).run(pack)
 print(results.summary())
-# detection_rate: 0.83 | false_positive_rate: 0.04 | avg_latency_ms: 312
+# [account_takeover] cases=4 detection_rate=0.00 false_positive_rate=0.00 precision=0.00 avg_latency_ms=0
 ```
 
 ## Attack packs
 
-| Pack | Cases | What it tests |
-|---|---|---|
-| `account_takeover` | 40 | Credential stuffing, SIM-swap social engineering, recovery-flow abuse |
-| `phishing_lures` | 40 | Smishing/phishing message generation and detection evasion |
-| `synthetic_identity` | 30 | Frankenstein identities, CPN abuse, bust-out patterns |
-| `refund_scams` | 30 | Friendly fraud, return abuse, chargeback social engineering |
-| `benign_hard` | 50 | Legit users who *look* suspicious (the false-positive killer) |
+| Pack | Cases | Fraud | Benign | Baseline detection | Baseline FPR | What it tests |
+|---|---|---|---|---|---|---|
+| `account_takeover` | 4 | 3 | 1 | 0.00 | 0.00 | Credential stuffing, SIM-swap social engineering, recovery-flow abuse |
+| `phishing_lures` | 5 | 4 | 1 | 0.25 | 0.00 | Smishing/phishing message generation and detection evasion |
+| `synthetic_identity` | 4 | 3 | 1 | 0.00 | 0.00 | Frankenstein identities, CPN abuse, bust-out patterns |
+| `refund_scams` | 4 | 3 | 1 | 0.00 | 0.00 | Friendly fraud, return abuse, chargeback social engineering |
+| `benign_hard` | 3 | 0 | 3 | — | 0.00 | Legit users who *look* suspicious (the false-positive killer) |
+| **Total** | **20** | **13** | **7** | **0.05 pack-average** | **0.00** | |
 
-Every pack pairs attack cases with benign twins, because a detector that
+Every attack pack pairs attack cases with benign twins, because a detector that
 flags 90% of attacks and 30% of your customers is a detector that gets
 turned off.
 
