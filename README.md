@@ -3,6 +3,17 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RishabhPande/fraud-eval/blob/main/examples/quickstart.py)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23695131.svg)](https://doi.org/10.5281/zenodo.23695131)
 
+## Links
+
+- Hugging Face dataset (v0.1.0 smoke test, 20 cases): https://huggingface.co/datasets/RishabhPande/fraud-eval
+- Hugging Face leaderboard Space: https://huggingface.co/spaces/RishabhPande/fraud-eval-leaderboard
+- Hugging Face counterfactual delay demo: https://huggingface.co/spaces/RishabhPande/fraud-eval-counterfactual-demo
+- Archived version, Zenodo v0.1.0: https://doi.org/10.5281/zenodo.23695132
+- Concept DOI (all versions): https://doi.org/10.5281/zenodo.23695131
+- Metric script: https://github.com/RishabhPande/fraud-eval/blob/main/fraud_eval_metric.py
+- Contributing guide: https://github.com/RishabhPande/fraud-eval/blob/main/CONTRIBUTING.md
+- Author: Rishabh Pande, ORCID: https://orcid.org/0009-0004-1901-7109
+
 **The open benchmark for evaluating LLM-based fraud and abuse detectors.**
 
 Every team shipping LLM agents, copilots, and chatbots needs to know: can my
