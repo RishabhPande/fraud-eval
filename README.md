@@ -66,18 +66,64 @@ fraud_eval/
     attacks.py         # attack-pack definitions and loaders
     metrics.py         # detection rate, FPR, latency, cost
     runner.py          # the Evaluator
+    counterfactual.py  # evaluation under selective + delayed labels
 examples/
     quickstart.py
     judge_example.py
     cost_example.py      # cost-aware metrics demo ($/correct-decision)
+    counterfactual_example.py  # naive vs corrected net savings
 tests/
     test_runner.py
+    test_counterfactual.py
 ```
+
+## Counterfactual evaluation (selective and delayed labels)
+
+`fraud_eval/counterfactual.py` is a clean-room rebuild of the evaluation
+protocol from "Counterfactual Evaluation of Fraud Models under Selective
+and Delayed Labels": the champion declines high-score orders, so declined
+orders never reveal their fraud status, and chargebacks arrive weeks
+later, so recent labels are immature. Naive offline metrics inherit both
+distortions.
+
+The module provides, in pure stdlib Python:
+
+- `simulate_orders()` — a synthetic order log with known ground truth:
+  a deterministic threshold champion, an exploration layer that
+  completes declined orders with a logged per-stratum probability, and
+  lognormal chargeback delays. No real data anywhere.
+- Three net-savings estimators for a candidate flag: `naive_net_savings`
+  (visible labels over completed orders), `ipw_net_savings`
+  (delay-corrected inverse-propensity weighting, configurable clip cap),
+  and `dr_net_savings` (delay-corrected doubly robust, with a weighted
+  logistic outcome model). Plus precision at capacity and AUC, and
+  `ground_truth_*` helpers for validation against known truth.
+- `promotion_gate()` — promote a challenger only when a lower
+  confidence bound on its paired advantage over the champion is
+  positive. The interval is the normal approximation on paired
+  doubly-robust pseudo-values, with a Bonferroni correction when
+  several challengers are screened. Intervals ignore
+  nuisance-estimation error, so treat them as approximate.
+- `partial_identification_bounds()` — the sharp bounds that remain
+  when exploration is zero. With no exploration, IPW/DR report
+  `identified=False` instead of crashing or silently extrapolating.
+
+Run the demo from the repo root (it reproduces the paper's headline
+finding on a fixed seed: naive savings badly biased, corrected savings
+close to truth, and a wide identified set with no exploration):
+
+```bash
+PYTHONPATH=. python examples/counterfactual_example.py
+```
+
+Cite this benchmark as a whole via `CITATION.cff` in the repo root
+(GitHub's "Cite this repository" button exports it as BibTeX).
 
 ## Roadmap
 
 - [x] LLM-as-judge scoring for open-ended detector outputs (`fraud_eval/judge.py`: bring your own LLM via a `complete` callable)
 - [x] Cost-aware metrics: $/correct-decision, not just accuracy
+- [x] Counterfactual evaluation under selective and delayed labels (`fraud_eval/counterfactual.py`)
 - [ ] Leaderboard: submit your detector's scores
 - [ ] Adversarial paraphrase augmentation (attack packs that evolve)
 - [ ] Multilingual packs (Hindi, Spanish, Portuguese; fraud is global)

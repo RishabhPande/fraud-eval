@@ -1,6 +1,30 @@
 """fraud-eval: the open benchmark for LLM-based fraud detectors."""
 
 from fraud_eval.attacks import AttackCase, AttackPack
+from fraud_eval.counterfactual import (
+    DEFAULT_A_MIN,
+    DEFAULT_CLIP,
+    DEFAULT_LAMBDA,
+    DelayLaw,
+    Estimate,
+    OrderLog,
+    OutcomeModel,
+    auc_score,
+    dr_net_savings,
+    fit_delay_law,
+    fit_outcome_model,
+    flags_from_scores,
+    ground_truth_auc,
+    ground_truth_net_savings,
+    ground_truth_precision,
+    ipw_net_savings,
+    naive_net_savings,
+    paired_advantage,
+    partial_identification_bounds,
+    precision_at_capacity,
+    promotion_gate,
+    simulate_orders,
+)
 from fraud_eval.detector import Detector, DetectorResult, RuleBasedDetector
 from fraud_eval.judge import JudgeSummary, JudgeVerdict, LLMJudge, summarize
 from fraud_eval.runner import EvaluationResults, Evaluator
@@ -8,14 +32,36 @@ from fraud_eval.runner import EvaluationResults, Evaluator
 __all__ = [
     "AttackCase",
     "AttackPack",
+    "DEFAULT_A_MIN",
+    "DEFAULT_CLIP",
+    "DEFAULT_LAMBDA",
+    "DelayLaw",
     "Detector",
     "DetectorResult",
+    "Estimate",
+    "OrderLog",
+    "OutcomeModel",
     "RuleBasedDetector",
     "EvaluationResults",
     "Evaluator",
     "JudgeSummary",
     "JudgeVerdict",
     "LLMJudge",
+    "auc_score",
+    "dr_net_savings",
+    "fit_delay_law",
+    "fit_outcome_model",
+    "flags_from_scores",
+    "ground_truth_auc",
+    "ground_truth_net_savings",
+    "ground_truth_precision",
+    "ipw_net_savings",
+    "naive_net_savings",
+    "paired_advantage",
+    "partial_identification_bounds",
+    "precision_at_capacity",
+    "promotion_gate",
+    "simulate_orders",
     "summarize",
 ]
 __version__ = "0.1.0"
