@@ -1,6 +1,7 @@
 # fraud-eval
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RishabhPande/fraud-eval/blob/main/examples/quickstart.py)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23695131.svg)](https://doi.org/10.5281/zenodo.23695131)
 
 **The open benchmark for evaluating LLM-based fraud and abuse detectors.**
 

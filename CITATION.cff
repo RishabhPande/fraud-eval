@@ -1,8 +1,12 @@
 cff-version: 1.2.0
 title: "fraud-eval"
+version: 0.1.0
+date-released: 2026-10-27
 authors:
   - given-names: Rishabh
     family-names: Pande
     orcid: "https://orcid.org/0009-0004-1901-7109"
 repository-code: "https://github.com/RishabhPande/fraud-eval"
+doi: 10.5281/zenodo.23695132
+url: "https://doi.org/10.5281/zenodo.23695132"
 abstract: "Open benchmark for evaluating LLM-based fraud and abuse detectors."
