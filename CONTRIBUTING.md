@@ -15,11 +15,11 @@ will use it, talk about it, and cite it.
   is actually verified. Version numbers follow verified counts, not targets.
 
 ## Three levels of contribution
-1. **One case, ~5 minutes** — submit a single case in the existing format, as a
+1. **One case, ~5 minutes** - submit a single case in the existing format, as a
    PR to the HF dataset or the GitHub repo. You do not need to write a whole pack.
-2. **One pack, credited by name** — submit a full pack (attack cases + benign twins).
+2. **One pack, credited by name** - submit a full pack (attack cases + benign twins).
    Your name appears in the dataset card under "Pack contributors" for that pack.
-3. **One detector, ranked** — submit a detector for the leaderboard Space
+3. **One detector, ranked** - submit a detector for the leaderboard Space
    (#1, https://huggingface.co/spaces/RishabhPande/fraud-eval-leaderboard).
    Ranked submissions must be public: detector name, author, and method on the table.
 
@@ -29,7 +29,7 @@ One JSON object per line, UTF-8, fields:
 - `pack`: pack name, snake_case, e.g. `account_takeover`
 - `prompt`: the user message / content under review (fictional test input only)
 - `context`: channel, metadata, conversation history
-- `label`: boolean, `true` = fraud/abuse, `false` = benign — never a string
+- `label`: boolean, `true` = fraud/abuse, `false` = benign - never a string
 - `attack_type`: e.g. `sim_swap`, `smishing`, `benign`
 - `notes`: threat-model notes for contributors
 
@@ -73,3 +73,29 @@ Example (fictional, defensive test input only):
 - You are free to cite the dataset version that includes your pack, and to link
   your pack in your own profile / papers.
 
+## Submit your detector to the leaderboard
+
+Accepted submissions are listed by detector name and author on the
+fraud-eval leaderboard
+(https://huggingface.co/spaces/RishabhPande/fraud-eval-leaderboard).
+Ranked submissions must be public: detector name, author, and method
+appear on the table.
+
+Submission format: a results JSON with one decision per public case ID,
+true = flagged as fraud/abuse, false = flagged as benign. Include
+decisions for all 20 public case IDs so per-pack rates can be computed
+for account_takeover, phishing_lures, synthetic_identity, refund_scams,
+and benign_hard. When pair scoring lands (fraud cases scored against
+their benign twins, with the flipped signal named), include per-pair
+results too.
+
+How to submit: open a pull request or an issue on
+https://github.com/RishabhPande/fraud-eval with the results JSON
+attached, plus your detector name, author name, and a short method
+description.
+
+Review: verified submissions are added to the leaderboard table
+manually, after format and case-ID checks. The public 20 are a smoke
+test, not a production result: do not tune on these 20 and report them
+as one, and no submission is ranked on the public 20 alone in a future
+hidden-set leaderboard.
