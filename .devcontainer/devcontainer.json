@@ -1,0 +1,1 @@
+{"image":"mcr.microsoft.com/devcontainers/python:3.10","name":"fraud-eval","postCreateCommand":"pip install -e ."}
