@@ -2,6 +2,8 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RishabhPande/fraud-eval/blob/main/examples/quickstart.py)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23695131.svg)](https://doi.org/10.5281/zenodo.23695131)
+[![Tests](https://github.com/RishabhPande/fraud-eval/actions/workflows/tests.yml/badge.svg)](https://github.com/RishabhPande/fraud-eval/actions/workflows/tests.yml)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/RishabhPande/fraud-eval)
 
 ## Links
 
@@ -23,7 +25,7 @@ red-team attack packs across the fraud types that actually cost money,
 a plug-in interface for any detector, and metrics that matter
 (detection rate, false-positive rate, latency, cost per decision).
 
-## Version note — read this before citing a case count
+## Version note - read this before citing a case count
 
 **v0.1.0 ships 20 cases, verified by running the code in `fraud_eval/attacks.py`.**
 An earlier version of this README stated 40 / 40 / 30 / 30 / 50 cases per pack
@@ -73,7 +75,7 @@ print(results.summary())
 | `phishing_lures` | 5 | 4 | 1 | 0.25 | 0.00 | Smishing/phishing message generation and detection evasion |
 | `synthetic_identity` | 4 | 3 | 1 | 0.00 | 0.00 | Frankenstein identities, CPN abuse, bust-out patterns |
 | `refund_scams` | 4 | 3 | 1 | 0.00 | 0.00 | Friendly fraud, return abuse, chargeback social engineering |
-| `benign_hard` | 3 | 0 | 3 | — | 0.00 | Legit users who *look* suspicious (the false-positive killer) |
+| `benign_hard` | 3 | 0 | 3 | - | 0.00 | Legit users who *look* suspicious (the false-positive killer) |
 | **Total** | **20** | **13** | **7** | **0.05 pack-average** | **0.00** | |
 
 Every attack pack pairs attack cases with benign twins, because a detector that
@@ -111,7 +113,7 @@ distortions.
 
 The module provides, in pure stdlib Python:
 
-- `simulate_orders()` — a synthetic order log with known ground truth:
+- `simulate_orders()` - a synthetic order log with known ground truth:
   a deterministic threshold champion, an exploration layer that
   completes declined orders with a logged per-stratum probability, and
   lognormal chargeback delays. No real data anywhere.
@@ -121,13 +123,13 @@ The module provides, in pure stdlib Python:
   and `dr_net_savings` (delay-corrected doubly robust, with a weighted
   logistic outcome model). Plus precision at capacity and AUC, and
   `ground_truth_*` helpers for validation against known truth.
-- `promotion_gate()` — promote a challenger only when a lower
+- `promotion_gate()` - promote a challenger only when a lower
   confidence bound on its paired advantage over the champion is
   positive. The interval is the normal approximation on paired
   doubly-robust pseudo-values, with a Bonferroni correction when
   several challengers are screened. Intervals ignore
   nuisance-estimation error, so treat them as approximate.
-- `partial_identification_bounds()` — the sharp bounds that remain
+- `partial_identification_bounds()` - the sharp bounds that remain
   when exploration is zero. With no exploration, IPW/DR report
   `identified=False` instead of crashing or silently extrapolating.
 
@@ -160,3 +162,11 @@ threat model.
 ## License
 
 MIT
+
+## Part of a fraud-ML series
+
+- [GNN Fraud Ring Detection](https://github.com/RishabhPande/GNN-fraud-ring-detection) - GraphSAGE, GAT, GCN, GIN and LSTM from scratch in pure Python (zero dependencies) for fraud ring detection
+- [Agentic Fraud Investigator](https://github.com/RishabhPande/agentic-fraud-investigator) - A multi-agent fraud investigation system in pure Python, zero dependencies.
+- [ID-document-forgery-detection-CV-](https://github.com/RishabhPande/ID-document-forgery-detection-CV-) - Classic image forensics for ID-document forgery detection, written from scratch in pure Python, zero dependencies.
+- [Time-series-anomaly-detection](https://github.com/RishabhPande/Time-series-anomaly-detection) - Time-series anomaly detection, including collective anomalies
+- [fraud-rings](https://github.com/RishabhPande/fraud-rings) - Synthetic identity-fraud ring generator plus graph-based detection, all in pure Python, no dependencies.
