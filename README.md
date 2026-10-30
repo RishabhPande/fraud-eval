@@ -141,6 +141,10 @@ close to truth, and a wide identified set with no exploration):
 PYTHONPATH=. python examples/counterfactual_example.py
 ```
 
+![Net savings: ground truth versus naive, IPW and doubly robust estimates, plus the no-exploration identified interval](docs/counterfactual.png)
+
+*Same simulation as the demo (synthetic orders, seed 3, 20,000 orders). Left: the naive estimate recovers 0.04 of a true 0.50 for the champion and 0.09 of 0.63 for the challenger. The corrected estimates land at 0.43 to 0.47 and 0.60 to 0.62, close to truth but not exact. Right: with no exploration, the identified set for the challenger is [-0.51, 3.90], so the truth (0.63) is bracketed, not pinned down. Regenerate with `PYTHONPATH=. python examples/plot_counterfactual.py` (needs matplotlib).*
+
 Cite this benchmark as a whole via `CITATION.cff` in the repo root
 (GitHub's "Cite this repository" button exports it as BibTeX).
 
