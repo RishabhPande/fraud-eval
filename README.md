@@ -57,7 +57,7 @@ standard benchmark for them. Every team hand-rolls its own tests.
 
 ```python
 from fraud_eval import AttackPack, Evaluator
-from fraud_eval.detectors import RuleBasedDetector  # swap in your own
+from fraud_eval.detector import RuleBasedDetector  # swap in your own
 
 pack = AttackPack.load("account_takeover")          # 4 cases in v0.1.0 (3 fraud, 1 benign)
 detector = RuleBasedDetector()                       # your detector here
