@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from fraud_eval.attacks import AttackPack
 from fraud_eval.detector import Detector, DetectorResult
@@ -65,6 +65,9 @@ class Evaluator:
                 except Exception:
                     verdict = DetectorResult(flagged=False, confidence=0.0, label="error")
                 elapsed = (time.perf_counter() - start) * 1000
+                # Store an evaluator-owned snapshot: adapters may reuse results.
+                # Raw metadata is copied one level; nested objects remain caller-owned.
+                verdict = replace(verdict, raw=dict(verdict.raw))
                 if verdict.latency_ms == 0.0:
                     verdict.latency_ms = elapsed
                 latencies.append(verdict.latency_ms)
