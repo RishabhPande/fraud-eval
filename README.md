@@ -67,6 +67,14 @@ print(results.summary())
 # [account_takeover] cases=4 detection_rate=0.00 false_positive_rate=0.00 precision=0.00 avg_latency_ms=0
 ```
 
+## Detector result ownership
+
+The evaluator stores each verdict's scalar fields and a shallow copy of its
+`raw` dictionary, so an adapter can reuse a `DetectorResult` without changing
+previous cases. Auto-measured latency is written only to that stored result,
+not the adapter's object. Nested values inside `raw` are not deep-copied:
+return fresh nested values if you mutate them between calls.
+
 ## Attack packs
 
 | Pack | Cases | Fraud | Benign | Baseline detection | Baseline FPR | What it tests |
