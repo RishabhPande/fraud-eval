@@ -15,6 +15,7 @@
 - Metric script: https://github.com/RishabhPande/fraud-eval/blob/main/fraud_eval_metric.py
 - Contributing guide: https://github.com/RishabhPande/fraud-eval/blob/main/CONTRIBUTING.md
 - Author: Rishabh Pande, ORCID: https://orcid.org/0009-0004-1901-7109
+- Listed in: [awesome-ai-security-tools](https://github.com/scadastrangelove/awesome-ai-security-tools) (LLM Red-Teaming and Guardrails, Scanners, Evals and Guardrails), merged November 14, 2026
 
 **The open benchmark for evaluating LLM-based fraud and abuse detectors.**
 
