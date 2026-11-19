@@ -24,6 +24,13 @@ class PackMetrics:
     avg_confidence_on_hits: float
     total_cost_usd: float = 0.0   # summed from DetectorResult.cost_usd
 
+    n_errors: int = 0            # exceptions caught from detector.decide()
+
+    @property
+    def error_rate(self) -> float:
+        """Fraction of cases whose detector call raised an exception."""
+        return self.n_errors / self.n_cases if self.n_cases else 0.0
+
     @property
     def detection_rate(self) -> float:          # recall on fraud cases
         denom = self.true_positives + self.false_negatives
@@ -60,5 +67,6 @@ class PackMetrics:
             f"false_positive_rate={self.false_positive_rate:.2f} "
             f"precision={self.precision:.2f} "
             f"avg_latency_ms={self.avg_latency_ms:.0f} "
+            f"errors={self.n_errors}/{self.n_cases} "
             f"cost_per_correct_decision=${self.cost_per_correct_decision:.4f}"
         )
