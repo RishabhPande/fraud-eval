@@ -76,6 +76,22 @@ previous cases. Auto-measured latency is written only to that stored result,
 not the adapter's object. Nested values inside `raw` are not deep-copied:
 return fresh nested values if you mutate them between calls.
 
+## Detector failures
+
+Caught `decide()` exceptions are visible as `errors=N/total` in each pack
+summary and the overall summary. `PackMetrics.n_errors` and `error_rate`
+report the count and fraction; `EvaluationResults.errors()` returns the
+failed cases, marked by `CaseResult.detector_error`.
+
+The runner still continues after an exception and records the existing
+unflagged fallback (`label="error"`, confidence zero). This preserves the
+current confusion-matrix metrics: a failed fraud call is a false negative,
+and a failed benign call is a true negative. Read those metrics alongside
+the error count, since an unflagged fallback is not a successful detector
+response. A detector that returns its own category named `error` without
+raising is not counted as a caught exception. Exception messages are not
+stored, since they may contain private request data or credentials.
+
 ## Attack packs
 
 | Pack | Cases | Fraud | Benign | Baseline detection | Baseline FPR | What it tests |
