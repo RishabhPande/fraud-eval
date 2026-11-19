@@ -15,6 +15,7 @@ class CaseResult:
     case_id: str
     label: bool
     result: DetectorResult
+    detector_error: bool = False
 
 
 @dataclass
@@ -29,13 +30,20 @@ class EvaluationResults:
             fpr = sum(m.false_positive_rate for m in self.pack_metrics) / len(self.pack_metrics)
             total_cost = sum(m.total_cost_usd for m in self.pack_metrics)
             total_correct = sum(m.correct_decisions for m in self.pack_metrics)
+            n_errors = sum(m.n_errors for m in self.pack_metrics)
+            n_cases = sum(m.n_cases for m in self.pack_metrics)
             cpcd = total_cost / total_correct if total_correct else 0.0
             lines.append(
                 f"[overall] avg_detection_rate={dr:.2f} "
                 f"avg_false_positive_rate={fpr:.2f} "
+                f"errors={n_errors}/{n_cases} "
                 f"cost_per_correct_decision=${cpcd:.4f}"
             )
         return "\n".join(lines)
+
+    def errors(self) -> list[CaseResult]:
+        """Cases where decide() raised, not detector-returned category labels."""
+        return [c for c in self.case_results if c.detector_error]
 
     def misses(self) -> list[CaseResult]:
         """Fraud cases the detector failed to flag — the scary list."""
@@ -54,15 +62,18 @@ class Evaluator:
         packs = [pack] if isinstance(pack, AttackPack) else pack
         results = EvaluationResults()
         for p in packs:
-            tp = fp = tn = fn = 0
+            tp = fp = tn = fn = n_errors = 0
             latencies: list[float] = []
             confidences: list[float] = []
             total_cost = 0.0
             for case in p.cases:
                 start = time.perf_counter()
+                detector_error = False
                 try:
                     verdict = self.detector.decide(case)
                 except Exception:
+                    detector_error = True
+                    n_errors += 1
                     verdict = DetectorResult(flagged=False, confidence=0.0, label="error")
                 elapsed = (time.perf_counter() - start) * 1000
                 # Store an evaluator-owned snapshot: adapters may reuse results.
@@ -73,7 +84,8 @@ class Evaluator:
                 latencies.append(verdict.latency_ms)
                 total_cost += max(0.0, verdict.cost_usd)
                 results.case_results.append(
-                    CaseResult(case_id=case.id, label=case.label, result=verdict)
+                    CaseResult(case_id=case.id, label=case.label, result=verdict,
+                               detector_error=detector_error)
                 )
                 if case.label and verdict.flagged:
                     tp += 1
@@ -101,6 +113,7 @@ class Evaluator:
                         sum(confidences) / len(confidences) if confidences else 0.0
                     ),
                     total_cost_usd=total_cost,
+                    n_errors=n_errors,
                 )
             )
         return results
