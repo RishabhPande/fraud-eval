@@ -83,6 +83,7 @@ import math
 import random
 import statistics
 from dataclasses import dataclass, field
+from numbers import Real
 
 # Floor on the delay CDF, as in the paper. The correction divides by F(a),
 # so an unfloored F near zero would explode individual contributions.
@@ -121,6 +122,18 @@ def _phi(z: float) -> float:
 def _z_value(alpha: float) -> float:
     """(1 - alpha) quantile of the standard normal."""
     return _NORM.inv_cdf(1.0 - alpha)
+
+
+def _check_alpha(alpha: float) -> None:
+    if (isinstance(alpha, bool) or not isinstance(alpha, Real)
+            or not math.isfinite(alpha) or not 0.0 < alpha < 1.0):
+        raise ValueError("alpha must be a finite real number strictly between 0 and 1")
+
+
+def _check_clip(clip: float) -> None:
+    if (isinstance(clip, bool) or not isinstance(clip, Real)
+            or not math.isfinite(clip) or clip <= 0.0):
+        raise ValueError("clip must be a positive finite real number")
 
 
 def _quantile_cutpoints(sorted_vals: list[float], n_bins: int) -> list[float]:
@@ -511,6 +524,7 @@ def ipw_net_savings(
     clip: float = DEFAULT_CLIP,
 ) -> Estimate:
     """Delay-corrected inverse-propensity estimate of net savings."""
+    _check_clip(clip)
     target = _target_indices(log, a_min)
     if not target:
         return Estimate(None, True, "ipw", 0, "empty target population")
@@ -578,6 +592,7 @@ def fit_outcome_model(
     cross-fitting, as in the paper -- so DR intervals that use this model
     are approximate.
     """
+    _check_clip(clip)
     rows = [i for i in range(len(log)) if log.completed[i] == 1]
     if not rows:
         raise ValueError("cannot fit outcome model: no completed orders")
@@ -663,6 +678,7 @@ def dr_net_savings(
     model: OutcomeModel | None = None,
 ) -> Estimate:
     """Delay-corrected doubly robust estimate of net savings."""
+    _check_clip(clip)
     target = _target_indices(log, a_min)
     if not target:
         return Estimate(None, True, "dr", 0, "empty target population")
@@ -702,6 +718,7 @@ def paired_advantage(
     per-order pseudo-value differences -- the pairing is what makes the
     gate's standard error small relative to unpaired comparisons.
     """
+    _check_clip(clip)
     law = delay_law if delay_law is not None else fit_delay_law(log)
     model_c = (
         model
@@ -736,6 +753,7 @@ def promotion_gate(
     corrected to ``alpha / n_challengers`` (paper Section 4.3)."""
     if n_challengers < 1:
         raise ValueError("n_challengers must be >= 1")
+    _check_alpha(alpha)
     level = alpha / n_challengers
     return advantage - _z_value(level) * se > 0.0
 
@@ -757,6 +775,7 @@ def precision_at_capacity(
     ``ipw`` weights flagged orders by ``R / e`` and uses delay-corrected
     labels, so it estimates precision on the full flagged population.
     """
+    _check_clip(clip)
     target = _target_indices(log, a_min)
     if method not in ("naive", "ipw"):
         raise ValueError("method must be 'naive' or 'ipw'")
@@ -837,6 +856,7 @@ def auc_score(
     matured (``F(a)`` near 1) instead of relying on this estimate at
     young ages.
     """
+    _check_clip(clip)
     target = _target_indices(log, a_min)
     if method not in ("naive", "ipw"):
         raise ValueError("method must be 'naive' or 'ipw'")

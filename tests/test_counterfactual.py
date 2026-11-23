@@ -10,6 +10,8 @@ import math
 import random
 from dataclasses import replace
 
+import pytest
+
 from fraud_eval.counterfactual import (
     DEFAULT_A_MIN,
     DelayLaw,
@@ -17,6 +19,7 @@ from fraud_eval.counterfactual import (
     auc_score,
     dr_net_savings,
     fit_delay_law,
+    fit_outcome_model,
     flags_from_scores,
     ground_truth_auc,
     ground_truth_net_savings,
@@ -189,3 +192,37 @@ def test_clip_caps_weights():
 def test_estimate_dataclass_defaults():
     est = Estimate(1.0, True, "naive", 100)
     assert est.note == ""
+
+
+BAD_ALPHA = [0, 1, -0.1, 1.5, float("nan"), float("inf"), True, "0.05", None]
+BAD_CLIP = [0, -5.0, float("nan"), float("inf"), True, "100", None]
+
+
+@pytest.mark.parametrize("alpha", BAD_ALPHA)
+def test_promotion_gate_rejects_invalid_alpha(alpha):
+    """A bad alpha must fail with a clear error, not leak StatisticsError
+    or silently change the gate's strictness."""
+    with pytest.raises(ValueError, match="alpha"):
+        promotion_gate(0.30, 0.10, alpha=alpha)
+
+
+@pytest.mark.parametrize("clip", BAD_CLIP)
+def test_estimators_reject_nonpositive_clip(clip):
+    """clip <= 0 zeroes or negates every IPW weight: precision reports the
+    false diagnosis 'no flagged orders', AUC reports 'no pos/neg examples',
+    and dr_net_savings returns a nonsense dollar figure with no error."""
+    log = simulate_orders(n=1000, seed=7, decline_rate=0.2, exploration=0.3)
+    flags = flags_from_scores(log.champion_score, 0.1)
+    law = fit_delay_law(log)
+    with pytest.raises(ValueError, match="clip"):
+        ipw_net_savings(log, flags, delay_law=law, clip=clip)
+    with pytest.raises(ValueError, match="clip"):
+        dr_net_savings(log, flags, delay_law=law, clip=clip, max_iter=10)
+    with pytest.raises(ValueError, match="clip"):
+        paired_advantage(log, flags, flags, delay_law=law, clip=clip, max_iter=10)
+    with pytest.raises(ValueError, match="clip"):
+        precision_at_capacity(log, flags, method="ipw", clip=clip)
+    with pytest.raises(ValueError, match="clip"):
+        auc_score(log, log.champion_score, method="ipw", clip=clip)
+    with pytest.raises(ValueError, match="clip"):
+        fit_outcome_model(log, law, clip=clip)
