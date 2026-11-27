@@ -188,6 +188,23 @@ New attack packs welcome, especially from people who fight fraud daily.
 Open a PR with your pack: cases + benign twins + a short README on the
 threat model.
 
+## Citation
+
+If you use fraud-eval in research, please cite the archived dataset:
+
+```bibtex
+@misc{pande2026fraudeval,
+  title     = {fraud-eval: An Open Benchmark for Evaluating {LLM}-Based Fraud and Abuse Detectors},
+  author    = {Pande, Rishabh},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23695132},
+  url       = {https://doi.org/10.5281/zenodo.23695132}
+}
+```
+
+The DOI above is the v0.1.0 version DOI. To cite fraud-eval across all versions, use the concept DOI: 10.5281/zenodo.23695131. The same metadata lives in `CITATION.cff` in the repo root, so GitHub's "Cite this repository" button exports it as BibTeX too.
+
 ## License
 
 MIT
